@@ -1,3 +1,4 @@
+[![CMake](https://github.com/kuvaus/gptj-chat/actions/workflows/cmake.yml/badge.svg)](https://github.com/kuvaus/gptj-chat/actions/workflows/cmake.yml)
 # gptj-chat
 Simple command line chat program for [GPT-J](https://en.wikipedia.org/wiki/GPT-J) models written in C++. Adapted from [ggml](https://github.com/ggerganov/ggml/) and [gptj.cpp](https://github.com/marella/gptj.cpp/).
 
