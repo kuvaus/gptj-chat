@@ -858,11 +858,17 @@ bool generate(GPTJModelContext* model_ctx, const char* prompt, GPTJParams params
         
         for (auto id : embd) {
             if (i < embd_inp.size()) {
+                // we're processing the prompt so print the animation
                 stop_display = false;
                 //printf("%s", vocab.id_to_token[id].c_str());
             } else {
                 stop_display = true;
                 future.wait();
+                // id = 21017 is token ### this means GPT-J is trying 
+                // to hallucinate ### Prompt: or ### Response:
+                // stop printing with id = 50256; instead.
+                if (id == 50256 || id == 21017) {embd.back() = 50256; break;}
+                
                 printf("%s", vocab.id_to_token[id].c_str());
                 if (id != 50256) result.append(vocab.id_to_token[id]);
             }
