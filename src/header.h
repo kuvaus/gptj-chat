@@ -53,7 +53,7 @@ std::string removeQuotes(const std::string& input);
 
 //parse_json.h functions
 void get_params_from_json(GPTJParams & params, std::string& filename);
-void print_usage(int argc, char** argv, const GPTJParams& params, std::string& prompt);
-bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt, bool& interactive, bool& continuous);
+void print_usage(int argc, char** argv, const GPTJParams& params, std::string& prompt, int& memory);
+bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt, bool& interactive, bool& continuous, int& memory);
 
 #endif

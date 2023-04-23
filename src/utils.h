@@ -25,7 +25,7 @@ std::string random_prompt(int32_t seed) {
 }
 
 
-void print_usage(int argc, char** argv, const GPTJParams& params, std::string& prompt) {
+void print_usage(int argc, char** argv, const GPTJParams& params, std::string& prompt, int& memory) {
     // Print usage information
     fprintf(stderr, "usage: %s [options]\n", argv[0]);
     fprintf(stderr, "\n");
@@ -48,6 +48,7 @@ void print_usage(int argc, char** argv, const GPTJParams& params, std::string& p
     fprintf(stderr, "  --top_p N             top-p sampling (default: %.1f)\n", params.top_p);
     fprintf(stderr, "  --temp N              temperature (default: %.1f)\n", params.temp);
     fprintf(stderr, "  -b N, --batch_size N  batch size for prompt processing (default: %d)\n", params.n_batch);
+    fprintf(stderr, "  -r N, --remember N    number of chars to remember from start of previous answer (default: %d)\n", memory);
     fprintf(stderr, "  -l,   --load_json FNAME\n");
     fprintf(stderr, "                        load options instead from json at FNAME (default: empty/no)\n");
     fprintf(stderr, "  -m FNAME, --model FNAME\n");
@@ -55,7 +56,7 @@ void print_usage(int argc, char** argv, const GPTJParams& params, std::string& p
     fprintf(stderr, "\n");
 }
 
-bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt, bool& interactive, bool& continuous) {
+bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt, bool& interactive, bool& continuous, int& memory) {
     std::string json_filename = "";
 
     // Parse parameters from a json file
@@ -100,16 +101,18 @@ bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt
             params.temp = static_cast<float>(std::stof(argv[++i]));
         } else if (arg == "-b" || arg == "--batch_size") {
             params.n_batch = static_cast<int32_t>(std::stoi(argv[++i]));
+        } else if (arg == "-r" || arg == "--remember") {
+            memory = static_cast<int>(std::stoi(argv[++i]));
         } else if (arg == "-m" || arg == "--model") {
             params.model = argv[++i];
         } else if (arg == "-j" || arg == "--json_load") {
             json_filename = argv[++i];
         } else if (arg == "-h" || arg == "--help") {
-            print_usage(argc, argv, params, prompt);
+            print_usage(argc, argv, params, prompt, memory);
             exit(0);
         } else {
             fprintf(stderr, "error: unknown argument: %s\n", arg.c_str());
-            print_usage(argc, argv, params, prompt);
+            print_usage(argc, argv, params, prompt, memory);
             exit(0);
         }
     }

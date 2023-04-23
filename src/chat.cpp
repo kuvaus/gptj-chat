@@ -29,18 +29,18 @@ int main(int argc, char* argv[]) {
 
     std::string response;
     response.reserve(10000);
-    int chars_in_memory = 0;
+    int memory = 200;
     GPTJParams params;
     std::string prompt = "";
     std::string input = "";
     std::string answer = "";
    
-    parse_params(argc, argv, params, prompt, interactive, continuous);
+    parse_params(argc, argv, params, prompt, interactive, continuous, memory);
 
     std::cout << "gptj-chat" << std::endl;
     auto context = load_model(params.model.c_str());
     // how many characters the model remembers from previous input and previous answer
-    chars_in_memory = std::max(params.n_threads * params.n_batch, params.n_threads * 10);
+    //chars_in_memory = std::max(params.n_threads * params.n_batch, params.n_threads * 10);
     set_console_color(con_st, PROMPT);
     std::cout << " " << prompt.c_str() << std::endl;
     set_console_color(con_st, DEFAULT);
@@ -59,8 +59,10 @@ int main(int argc, char* argv[]) {
         answer = response.c_str();
 
         while (continuous) {
-
-            std::string memory_string = default_prefix + default_header + input.substr(0, chars_in_memory) + default_footer + answer.substr(0, chars_in_memory);
+            std::string memory_string = default_prefix;
+            if (memory > 1) {
+                memory_string = default_prefix + default_header + input.substr(0, memory) + default_footer + answer.substr(0, memory);
+            }
             input = get_input(con_st, context, input);
             auto a = generate(context, (memory_string + default_header + input + default_footer).c_str(), params, &response[0]);
             answer = response.c_str();
