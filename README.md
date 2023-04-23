@@ -64,13 +64,6 @@ You can set specific initial prompt with the -p flag.
 Runs default in interactive and continuous mode.
 Type 'quit', 'exit' or, 'Ctrl+C' to quit.
 
-usage: ./bin/chat [options]
-
-A simple chat program for GPT-J based models.
-You can set specific initial prompt with the -p flag.
-Runs default in interactive and continuous mode.
-Type 'quit', 'exit' or, 'Ctrl+C' to quit.
-
 options:
   -h, --help            show this help message and exit
   --run-once            disable continuous mode

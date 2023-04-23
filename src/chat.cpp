@@ -39,8 +39,6 @@ int main(int argc, char* argv[]) {
 
     std::cout << "gptj-chat" << std::endl;
     auto context = load_model(params.model.c_str());
-    // how many characters the model remembers from previous input and previous answer
-    //chars_in_memory = std::max(params.n_threads * params.n_batch, params.n_threads * 10);
     set_console_color(con_st, PROMPT);
     std::cout << " " << prompt.c_str() << std::endl;
     set_console_color(con_st, DEFAULT);
