@@ -35,10 +35,22 @@ int main(int argc, char* argv[]) {
     std::string input = "";
     std::string answer = "";
    
+
+    set_console_color(con_st, PROMPT);
+    set_console_color(con_st, BOLD);
+    std::cout << "gptj-chat";
+    set_console_color(con_st, DEFAULT);
+    std::cout << "" << std::endl;
+    
     parse_params(argc, argv, params, prompt, interactive, continuous, memory);
 
-    std::cout << "gptj-chat" << std::endl;
     auto context = load_model(params.model.c_str());
+    if (context == nullptr) {
+        std::cout << "Press any key to exit..." << std::endl;
+        std::cin.get();
+        return 0;
+    }
+
     set_console_color(con_st, PROMPT);
     std::cout << " " << prompt.c_str() << std::endl;
     set_console_color(con_st, DEFAULT);

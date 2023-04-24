@@ -3,6 +3,11 @@
 #ifndef HEADER_H
 #define HEADER_H
 
+#ifdef _WIN32
+#define NOMINMAX
+#include <windows.h>
+#endif
+
 #include <cstdio>
 #include <cassert>
 #include <cmath>
@@ -16,7 +21,6 @@
 #include <fstream>
 #include <regex>
 #include <cstring>
-
 
 struct GPTJParams {
     int32_t seed = -1;
@@ -34,7 +38,8 @@ struct GPTJParams {
 enum ConsoleColor {
     DEFAULT = 0,
     PROMPT,
-    USER_INPUT
+    USER_INPUT,
+    BOLD
 };
 
 struct ConsoleState {

@@ -5,12 +5,25 @@
 
 #include "header.h" 
 
+
 void set_console_color(ConsoleState &con_st, ConsoleColor color) {
     if (con_st.use_color && con_st.color != color) {
+        //Windows handles colors differently.
+        #ifdef _WIN32
+          WORD windows_colors[] = {
+            7, 14, 10, 15
+        };          
+            HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+            SetConsoleTextAttribute(hConsole, windows_colors[color]);
+        #else
+        //ANSI colors, works for unix.
         const char* ansi_colors[] = {
-            "\x1b[0m", "\x1b[33m", "\x1b[1m\x1b[32m"
+            //DEFAULT, PROMPT, USER_INPUT,   BOLD
+            //default, yellow, bright_green, bold
+            "\x1b[0m", "\x1b[33m", "\x1b[1m\x1b[32m", "\x1b[1m"
         };
         printf("%s", ansi_colors[color]);
+        #endif
         con_st.color = color;
     }
 }
@@ -49,7 +62,7 @@ void print_usage(int argc, char** argv, const GPTJParams& params, std::string& p
     fprintf(stderr, "  --temp N              temperature (default: %.1f)\n", params.temp);
     fprintf(stderr, "  -b N, --batch_size N  batch size for prompt processing (default: %d)\n", params.n_batch);
     fprintf(stderr, "  -r N, --remember N    number of chars to remember from start of previous answer (default: %d)\n", memory);
-    fprintf(stderr, "  -l,   --load_json FNAME\n");
+    fprintf(stderr, "  -j,   --load_json FNAME\n");
     fprintf(stderr, "                        load options instead from json at FNAME (default: empty/no)\n");
     fprintf(stderr, "  -m FNAME, --model FNAME\n");
     fprintf(stderr, "                        model path (current: %s)\n", params.model.c_str());
@@ -66,12 +79,15 @@ bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt
         if (arg == "-j" || arg == "--json_load") {
             json_filename = argv[++i];
             if (!json_filename.empty()) {
-                std::cout << "Parsing options from json: " << json_filename << std::endl;
-                std::cout << "Note: You can still override the json parameters with -args." << std::endl;
+                std::cout << "gptj_chat: parsing options from json: " << json_filename << std::endl;
                 get_params_from_json(params, json_filename);
             } else {
-                std::cout << "Trying to parse options from json but got empty filename." << std::endl;
+                std::cout << "gptj_chat: trying to parse options from json but got empty filename." << std::endl;
             }
+        } else {
+            fprintf(stderr, "error: unknown argument: %s\n", arg.c_str());
+            print_usage(argc, argv, params, prompt, memory);
+            exit(0);
         }
     }
 

@@ -1,5 +1,5 @@
-#include "ggml/ggml.h"
 #include "header.h"
+#include "ggml/ggml.h"
 
 #include <cassert>
 #include <cmath>
@@ -19,6 +19,13 @@
 #include <chrono>
 #include <atomic>
 
+
+//////////////////////////////////////////////////////////////////////////
+////////////                    BOOLEANS                      ////////////
+//////////////////////////////////////////////////////////////////////////
+
+bool print_model_details = false;
+bool print_model_size    = false;
 
 //////////////////////////////////////////////////////////////////////////
 ////////////                    ANIMATION                     ////////////
@@ -255,11 +262,13 @@ struct gptj_model {
 
 // load the model's weights from a file
 bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & vocab) {
-    printf("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
+    //printf("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
+    printf("%s: loading model from '%s' - please wait ...\n", "gptj-chat", fname.c_str());
 
     auto fin = std::ifstream(fname, std::ios::binary);
     if (!fin) {
-        fprintf(stderr, "%s: failed to open '%s'\n", __func__, fname.c_str());
+        //fprintf(stderr, "%s: failed to open '%s'\n", __func__, fname.c_str());
+        //fprintf(stderr, "%s: failed to open '%s'\n", "gptj-chat", fname.c_str());
         return false;
     }
 
@@ -284,14 +293,15 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
         fin.read((char *) &hparams.n_layer, sizeof(hparams.n_layer));
         fin.read((char *) &hparams.n_rot,   sizeof(hparams.n_rot));
         fin.read((char *) &hparams.f16,     sizeof(hparams.f16));
-
-        printf("%s: n_vocab = %d\n", __func__, hparams.n_vocab);
-        printf("%s: n_ctx   = %d\n", __func__, hparams.n_ctx);
-        printf("%s: n_embd  = %d\n", __func__, hparams.n_embd);
-        printf("%s: n_head  = %d\n", __func__, hparams.n_head);
-        printf("%s: n_layer = %d\n", __func__, hparams.n_layer);
-        printf("%s: n_rot   = %d\n", __func__, hparams.n_rot);
-        printf("%s: f16     = %d\n", __func__, hparams.f16);
+        if (print_model_details) {
+            printf("%s: n_vocab = %d\n", __func__, hparams.n_vocab);
+            printf("%s: n_ctx   = %d\n", __func__, hparams.n_ctx);
+            printf("%s: n_embd  = %d\n", __func__, hparams.n_embd);
+            printf("%s: n_head  = %d\n", __func__, hparams.n_head);
+            printf("%s: n_layer = %d\n", __func__, hparams.n_layer);
+            printf("%s: n_rot   = %d\n", __func__, hparams.n_rot);
+            printf("%s: f16     = %d\n", __func__, hparams.f16);
+        }
     }
 
     // load vocab
@@ -377,8 +387,9 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
         ctx_size += n_ctx*n_layer*n_embd*ggml_type_sizef(GGML_TYPE_F16); // memory_v
 
         ctx_size += (5 + 10*n_layer)*256; // object overhead
-
-        printf("%s: ggml ctx size = %6.2f MB\n", __func__, ctx_size/(1024.0*1024.0));
+        if (print_model_details) {
+            printf("%s: ggml ctx size = %6.2f MB\n", __func__, ctx_size/(1024.0*1024.0));
+        }
     }
 
     // create the ggml context
@@ -475,8 +486,9 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
         model.memory_v = ggml_new_tensor_1d(ctx, GGML_TYPE_F16, n_elements);
 
         const size_t memory_size = ggml_nbytes(model.memory_k) + ggml_nbytes(model.memory_v);
-
-        printf("%s: memory_size = %8.2f MB, n_mem = %d\n", __func__, memory_size/1024.0/1024.0, n_mem);
+        if (print_model_details) {
+            printf("%s: memory_size = %8.2f MB, n_mem = %d\n", __func__, memory_size/1024.0/1024.0, n_mem);
+        }
     }
 
     // load weights
@@ -484,7 +496,8 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
         int n_tensors = 0;
         size_t total_size = 0;
 
-        printf("%s: ", __func__);
+        //printf("%s: ", __func__);
+        printf("%s: ", "gptj-chat");
 
         while (true) {
             int32_t n_dims;
@@ -550,8 +563,10 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
         }
 
         printf(" done\n");
-
-        printf("%s: model size = %8.2f MB / num tensors = %d\n", __func__, total_size/1024.0/1024.0, n_tensors);
+        if (print_model_size) {
+            //printf("%s: model size = %8.2f MB / num tensors = %d\n", __func__, total_size/1024.0/1024.0, n_tensors);
+            printf("%s: model size = %8.2f MB / num tensors = %d\n", "gptj-chat", total_size/1024.0/1024.0, n_tensors);
+        }
     }
 
     fin.close();
@@ -807,7 +822,8 @@ GPTJModelContext* load_model(const char* filename) {
     auto* ctx = new GPTJModelContext;
     if (!gptj_model_load(filename, ctx->model, ctx->vocab)) {
         delete ctx;
-        fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, filename);
+        //fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, filename);
+        fprintf(stderr, "%s: failed to load model from '%s'\n", "gptj-chat", filename);
         return nullptr;
     }
     return ctx;

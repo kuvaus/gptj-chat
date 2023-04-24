@@ -79,7 +79,7 @@ options:
   --temp N              temperature (default: 0.9)
   -b N, --batch_size N  batch size for prompt processing (default: 8)
   -r N, --remember N    number of chars to remember from start of previous answer (default: 200)
-  -l,   --load_json FNAME
+  -j,   --load_json FNAME
                         load options instead from json at FNAME (default: empty/no)
   -m FNAME, --model FNAME
                         model path (current: models/ggml-gpt4all-j.bin)
