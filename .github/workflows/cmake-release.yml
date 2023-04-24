@@ -72,7 +72,6 @@ jobs:
           for os in ubuntu-latest macos-latest windows-latest; do
             echo "Downloading binaries for $os"
             gh run download --repo ${{ github.repository }} --name "binaries-$os"
-            gh run download --name binaries-$os --repo kuvaus/gptj-chat2 --dir build/binaries/
           done
           ls -R build/binaries
 
