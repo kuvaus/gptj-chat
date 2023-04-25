@@ -68,11 +68,10 @@ void print_usage(int argc, char** argv, const GPTJParams& params, std::string& p
     fprintf(stderr, "                        model path (current: %s)\n", params.model.c_str());
     fprintf(stderr, "\n");
 }
-
 bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt, bool& interactive, bool& continuous, int& memory) {
     std::string json_filename = "";
 
-    // Parse parameters from a json file
+    // Parse command-line arguments
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
 
@@ -84,18 +83,7 @@ bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt
             } else {
                 std::cout << "gptj_chat: trying to parse options from json but got empty filename." << std::endl;
             }
-        } else {
-            fprintf(stderr, "error: unknown argument: %s\n", arg.c_str());
-            print_usage(argc, argv, params, prompt, memory);
-            exit(0);
-        }
-    }
-
-    // Parse command-line arguments
-    for (int i = 1; i < argc; i++) {
-        std::string arg = argv[i];
-
-        if (arg == "--run-once") {
+        } else if (arg == "--run-once") {
             continuous = false;
         } else if (arg == "--no-interactive") {
             interactive = false;
@@ -121,8 +109,6 @@ bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt
             memory = static_cast<int>(std::stoi(argv[++i]));
         } else if (arg == "-m" || arg == "--model") {
             params.model = argv[++i];
-        } else if (arg == "-j" || arg == "--json_load") {
-            json_filename = argv[++i];
         } else if (arg == "-h" || arg == "--help") {
             print_usage(argc, argv, params, prompt, memory);
             exit(0);
@@ -135,5 +121,6 @@ bool parse_params(int argc, char** argv, GPTJParams& params, std::string& prompt
 
     return true;
 }
+
 
 #endif
