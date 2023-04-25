@@ -2,7 +2,7 @@
 # GPTJ-Chat
 Simple command line chat program for [GPT-J](https://en.wikipedia.org/wiki/GPT-J) models written in C++. Based on [ggml](https://github.com/ggerganov/ggml/) and [gptj.cpp](https://github.com/marella/gptj.cpp/).
 
-<img alt="GPTJ-Chat demo" src="https://user-images.githubusercontent.com/22169537/233982228-c3904037-9d33-4089-a66a-9160d95d8cd4.gif" width="600" />
+<img alt="GPTJ-Chat demo" src="https://user-images.githubusercontent.com/22169537/234323778-64365dc9-8bd9-4a48-b7de-ec0280a5fb4e.gif" width="600" />
 
 # Table of contents
 <!-- TOC -->
