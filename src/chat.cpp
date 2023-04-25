@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     std::cout << " " << prompt.c_str() << std::endl;
     set_console_color(con_st, DEFAULT);
 
-    std::string default_prefix = "The prompt below is a question to answer, a task to complete, or a conversation to respond to; decide which and write an appropriate response.";
+    std::string default_prefix = "### Instruction:\n The prompt below is a question to answer, a task to complete, or a conversation to respond to; decide which and write an appropriate response.";
     std::string default_header = "\n### Prompt: ";
     std::string default_footer = "\n### Response: ";
 
